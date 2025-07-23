@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Diesel Management Dashboard</title>
+
+<style>
+  @import url('https://fonts.googleapis.com/css?family=Roboto:700');
+.dashboard-container {
+  max-width: 100vw; /* Prevent overflow on any device */
+  width: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 0 1rem;
+}
+header {
+  background: #2c3e50;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+/* main.info-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem 0;
+  text-transform: uppercase;
+  font-size: 2.2rem;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+}
+
+
+.info-box img {
+  width: 70px;
+  height: auto;
+  flex-shrink: 0;
+} */
+
+  /* Base styles */
+  body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #131417;
+    color: #e5e5e5;
+    padding: 0;
+  }
+
+  header {
+    background: #2c3e50;
+    color: white;
+    padding: 1rem;
+    text-align: center;
+  }
+
+  /* Main container */
+  /* main.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    text-transform: uppercase;
+    font-size: 2.2rem;
+    flex-wrap: nowrap;
+  } */
+
+  /* Animation blocks */
+ .animation, .animation2 {
+  min-width: max-content;
+  height: 3rem;
+  overflow: hidden;
+  position: relative;
+  flex-shrink: 0;
+}
+
+  .slider {
+    display: flex;
+    flex-direction: column;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-fill-mode: forwards;
+  }
+
+  .animation .slider {
+    animation-name: text-slide;
+    animation-duration: 8s;
+  }
+
+  .animation2 .slider {
+    animation-name: text-slide;
+    animation-duration: 16s;
+  }
+
+  .slider > div {
+    height: 3rem;
+    line-height: 3rem;
+    padding: 0 0.75rem;
+    box-sizing: border-box;
+    color: #fff;
+    text-align: center;
+    font-weight: 700;
+    border-radius: 0.3rem;
+  }
+
+  /* Background colors */
+  .first {
+    background-color: #20a7d8;
+  }
+
+  .second {
+    background-color: #c10528;
+  }
+
+  .third {
+    background-color: #FFDC00;
+    color: #000;
+  }
+
+  /* Slide animation */
+  @keyframes text-slide {
+    0%, 10% { transform: translateY(0); }
+    20%, 30% { transform: translateY(-3rem); }
+    40%, 60% { transform: translateY(-6rem); }
+    70%, 80% { transform: translateY(-3rem); }
+    90%, 100% { transform: translateY(0); }
+  }
+
+  /* Image styles */
+  /* main.container img {
+    width: 70px;
+    vertical-align: middle;
+    flex-shrink: 0;
+  } */
+
+  /* Optional iframe styles */
+  iframe {
+    width: 100%;
+    height: 90vh;
+    border: none;
+  }
+
+  .fallback {
+    display: none;
+    padding: 1rem;
+    text-align: center;
+    background: #ffdede;
+    color: red;
+  }
+
+  .debug-log {
+    font-size: 14px;
+    background: #eee;
+    color: #333;
+    padding: 10px;
+    margin: 10px;
+    border: 1px dashed #999;
+    display: none;
+  }
+
+  /* html, body {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  overscroll-behavior: none;
+} */
+
+
+  .cropped-wrapper {
+    width: 100px;
+    height: 60px; /* Show only 90% of the image height */
+    overflow: hidden;
+    position: relative;
+  }
+
+  .cropped-wrapper img {
+    width: 100px;
+    height: auto;
+    display: block;
+  }
+
+
+header {
+  position: relative;
+  height: 150px;
+  background-color: transparent; /* or your desired middle color */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 2em;
+  overflow: hidden;
+}
+
+/* Left third background */
+.bg-left {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 33.33%;
+  height: 100%;
+  background-image: url('sayf logo.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+/* Right third background */
+.bg-right {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 60.33%;
+  height: 100%;
+  background-image: url('petroleum2.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  z-index: 0;
+}
+
+/* Header content above backgrounds */
+header h1 {
+  position: relative; /* above bg divs */
+  z-index: 1;
+}
+</style>
+
+
+</head>
+<body>
+
+<nav style="text-align: center; margin-top: 1rem;">
+  <a href="index.html" style="margin-right: 1rem; color: #20a7d8;">🏠 Dashboard</a>
+  <a href="devices.html" style="color: #20a7d8;">📟 Devices</a>
+  <a href="DieselSensor.html" style="color: #20a7d8;">⛽ Diesel Sensor</a>
+</nav>
+
+
+
+
+<!-- <a href="https://script.google.com/macros/s/AKfycby0pegI9k7YUtlJSGJNc-WJK1T17wfJ-Eb-tZC6G85N4qE3eRFfC0yNVAYBAohnlxfc/exec" target="_blank" rel="noopener noreferrer">Open Dashboard</a> -->
+
+
+  <iframe 
+    src="https://script.google.com/macros/s/AKfycbxzJXPdXSgN01qunWNBWePfAy_I-m_pZwbXrYC9Oplg34dwsannv18gFlJjXkQN8Pnn/exec"
+    id="dashboardIframe">
+  </iframe>
+
+  <!-- <div class="fallback" id="fallback">
+    ❌ Unable to load dashboard.<br/>
+    <a href="https://script.google.com/macros/s/AKfycbyG90pUnmtAoQbTEhGrIzWr-7rpkTLHTuEaZJGtcRFvtKd3q-KGhIDFyublfx0kslY6/exec" target="_blank">
+      Open in a new tab
+    </a>
+  </div> -->
+
+  <div class="debug-log" id="debugLog"></div>
+
+  <script>
+    const iframe = document.getElementById("dashboardIframe");
+    const fallback = document.getElementById("fallback");
+    const debugLog = document.getElementById("debugLog");
+
+    function logDebug(message) {
+      console.log(message);
+      debugLog.innerHTML += `<div>${message}</div>`;
+      debugLog.style.display = "block";
+    }
+
+    iframe.addEventListener("load", () => {
+    //   logDebug("✅ iframe loaded successfully.");
+    });
+
+    iframe.addEventListener("error", () => {
+      fallback.style.display = "block";
+      logDebug("❌ iframe failed to load.");
+    });
+
+    // Extra timeout check in case iframe silently fails
+    setTimeout(() => {
+      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+      if (!iframeDocument || iframeDocument.body.innerHTML.trim() === "") {
+        fallback.style.display = "block";
+        logDebug("⚠️ iframe is empty after timeout. Possibly blocked or content not loading.");
+      }
+    }, 5000);
+  </script>
+
+
+
+
+<div class="dashboard-container">
+  <header>
+      <div class="bg-left"></div>
+  <div class="bg-right"></div>
+    <!-- <h7>Diesel Distributors</h7> -->
+  </header>
+
+  <main class="info-box">
+    <section class="animation">
+      <div class="slider">
+        <div class="first">Hsein</div>
+        <div class="second">Ali</div>
+        <div class="third">Sayf</div>
+      </div>
+    </section>
+
+
+  <!-- <img src="images/Water Magic.gif" >
+   -->
+  <div class="cropped-wrapper">
+  <img 
+    src="Water Magic.gif" 
+    class="cropped-ofp"
+    alt="Water Magic">
+
+</div>
+
+
+    <section class="animation2">
+      <div class="slider">
+        <div class="first">You Are Strong</div>
+        <div class="second">Believe in Yourself</div>
+        <div class="third">Great Things Are Coming</div>
+      </div>
+    </section>
+  </main>
+</div>
+
+</body>
+</html>
