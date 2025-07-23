@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Device Monitor</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Roboto', sans-serif;
+      background-color: #131417;
+      color: #e5e5e5;
+    }
+
+    nav {
+      text-align: center;
+      margin-top: 1rem;
+    }
+
+    nav a {
+      color: #20a7d8;
+      margin: 0 1rem;
+    }
+
+    iframe {
+      width: 100%;
+      height: 90vh;
+      border: none;
+    }
+
+    .debug-log {
+      display: none;
+      font-size: 14px;
+      background: #eee;
+      color: #333;
+      padding: 10px;
+      margin: 10px;
+      border: 1px dashed #999;
+    }
+
+    .fallback {
+      display: none;
+      padding: 1rem;
+      text-align: center;
+      background: #ffdede;
+      color: red;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <a href="index.html">🏠 Dashboard</a>
+    <a href="devices.html">📟 Devices</a>
+  </nav>
+
+  <iframe 
+    src="https://script.google.com/macros/s/AKfycby_QnMkaAN4LYuCQwLF3mhxJTfWVq7aYEzI0HihPFJDEwqcHWtihsxoeMSp59ieV_moOg/exec"
+    id="deviceIframe">
+  </iframe>
+
+  <div class="fallback" id="fallback">
+    ❌ Unable to load device monitor.<br/>
+    <a href="https://script.google.com/macros/s/AKfycby8eV5VOBsKQVeIT1sH6FWdSLMW87_xp-XdYxwkBXWUqPLQUnpKqT-15pnFH_vG_R1U3g/exec" target="_blank">
+      Open in a new tab
+    </a>
+  </div>
+
+  <div class="debug-log" id="debugLog"></div>
+
+  <script>
+    const iframe = document.getElementById("deviceIframe");
+    const fallback = document.getElementById("fallback");
+    const debugLog = document.getElementById("debugLog");
+
+    function logDebug(message) {
+      console.log(message);
+      debugLog.innerHTML += `<div>${message}</div>`;
+      debugLog.style.display = "block";
+    }
+
+    iframe.addEventListener("error", () => {
+      fallback.style.display = "block";
+      logDebug("❌ iframe failed to load.");
+    });
+
+    setTimeout(() => {
+      // Don't try to read iframeDocument due to cross-origin issue
+      // Instead, just show fallback if still blank
+      if (!iframe || iframe.contentWindow.length === 0) {
+        fallback.style.display = "block";
+        logDebug("⚠️ iframe may have failed to load due to content blocking.");
+      }
+    }, 5000);
+  </script>
+
+</body>
+</html>
