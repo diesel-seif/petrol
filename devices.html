@@ -94,5 +94,70 @@
     }, 5000);
   </script>
 
+
+
+  <script>
+(function() {
+  const allowedHost = 'silverhome.uk';
+
+  function isAllowedOrigin(origin) {
+    return origin && origin.includes(allowedHost);
+  }
+
+  try {
+    // Allow if opened directly on silverhome.uk domain (not embedded in iframe)
+    if (window.top === window.self) {
+      if (isAllowedOrigin(window.location.hostname)) {
+        // Allowed direct access on silverhome.uk domain
+        return;
+      }
+      // If direct access on other domains, block
+      document.body.innerHTML = `
+        <div style="padding:2rem; text-align:center;">
+          <h1>🚫 Access Denied</h1>
+          <p>This app must be accessed directly on silverhome.uk domain or embedded in an iframe from silverhome.uk domains.</p>
+        </div>`;
+      return;
+    }
+
+    // If embedded in iframe, check ancestor origins
+    const ancestorOrigins = window.location.ancestorOrigins;
+    let allowed = false;
+
+    if (ancestorOrigins && ancestorOrigins.length > 0) {
+      for (let i = 0; i < ancestorOrigins.length; i++) {
+        if (isAllowedOrigin(ancestorOrigins[i])) {
+          allowed = true;
+          break;
+        }
+      }
+    }
+
+    // Fallback to document.referrer if no ancestorOrigins or no allowed found
+    if (!allowed) {
+      const ref = document.referrer || '';
+      allowed = isAllowedOrigin(ref);
+    }
+
+    if (!allowed) {
+      document.body.innerHTML = `
+        <div style="padding:2rem; text-align:center;">
+          <h1>🚫 Access Denied</h1>
+          <p>This app can only be embedded from silverhome.uk domains.</p>
+          <p>Embedding origin: ${document.referrer || '(unknown)'}</p>
+        </div>`;
+    }
+  } catch (e) {
+    document.body.innerHTML = `
+      <div style="padding:2rem; text-align:center;">
+        <h1>🚫 Access Denied</h1>
+        <p>Embedding domain check failed.</p>
+      </div>`;
+  }
+})();
+
+</script>
+
+  
 </body>
 </html>
