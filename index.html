@@ -4,7 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Diesel Management Dashboard</title>
-
+<script>
+  if (window.location.hostname === "diesel-seif.github.io") {
+    // Show an error or redirect
+    document.body.innerHTML = "<h1>Access Denied</h1>";
+    // Or redirect forcibly:
+    // window.location.href = "https://yourdomain.com";
+  }
+</script>
 <style>
   @import url('https://fonts.googleapis.com/css?family=Roboto:700');
 .dashboard-container {
