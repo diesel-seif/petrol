@@ -5,11 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Diesel Management Dashboard</title>
 <script>
-  if (window.location.hostname === "diesel-seif.github.io") {
-    // Show an error or redirect
-    document.body.innerHTML = "<h1>Access Denied</h1>";
-    // Or redirect forcibly:
-    // window.location.href = "https://yourdomain.com";
+  const blockedHost = "diesel-seif.github.io";
+  const allowedHost = "yourdomain.com"; // optional, just for reference
+
+  if (window.location.hostname === blockedHost) {
+    // Option 1: Show custom Access Denied message
+    document.body.innerHTML = `
+      <div style="text-align:center;padding:100px;font-family:sans-serif;">
+        <h1>🚫 Access Denied</h1>
+        <p>This page is not available directly.</p>
+        <p>Please visit through the authorized domain.</p>
+      </div>
+    `;
+
+    // Option 2: Redirect to a "not authorized" page (hosted somewhere else)
+    // Uncomment this if you'd rather redirect
+    // window.location.href = "https://drive.google.com/your_custom_info_page"; 
   }
 </script>
 <style>
