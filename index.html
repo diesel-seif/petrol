@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Diesel Management Dashboard</title>
 
+
 <style>
   @import url('https://fonts.googleapis.com/css?family=Roboto:700');
 .dashboard-container {
@@ -20,7 +21,16 @@ header {
   padding: 1rem;
   text-align: center;
 }
-
+  #fallbackMessage {
+    display: none;
+    color: red;
+    font-weight: bold;
+    text-align: center;
+    padding: 20px;
+  }
+  #sub-frame-error {
+    display: none !important;
+  }
 /* main.info-box {
   display: flex;
   align-items: center;
@@ -139,7 +149,7 @@ header {
   /* Optional iframe styles */
   iframe {
     width: 100%;
-    height: 90vh;
+    height: 100vh;
     border: none;
   }
 
@@ -227,26 +237,106 @@ header h1 {
   position: relative; /* above bg divs */
   z-index: 1;
 }
+
+
+
+
+/* Toggle switch container */
+.toggle-switch {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 60px;
+  height: 34px;
+  z-index: 1000;
+  user-select: none;
+}
+
+/* Hide default checkbox */
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* The slider background */
+.toggle-switch .slider {
+  position: relative;
+  cursor: pointer;
+  background-color: #333;
+  border-radius: 34px;
+  transition: background-color 0.4s;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* The sliding circle */
+.toggle-switch .slider::before {
+  content: "";
+  position: absolute;
+  height: 26px;
+  width: 26px;
+  left: 4px;
+  top: 4px;
+  background: #ffdd00; /* sun color */
+  border-radius: 50%;
+  transition: 0.4s;
+  box-shadow: 0 0 8px #ffdd00;
+}
+
+/* Moon icon - when toggled off */
+.toggle-switch input:not(:checked) + .slider {
+  background-color: #222;
+}
+
+.toggle-switch input:not(:checked) + .slider::before {
+  background: #f0f0f0;
+  box-shadow: inset -4px -4px 0 0 #bbb, inset 4px 4px 0 0 #fff;
+  left: 30px;
+  top: 4px;
+  border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+  /* crescent shape */
+  clip-path: circle(50% at 40% 50%);
+}
+
+/* Slide the circle right on checked */
+.toggle-switch input:checked + .slider::before {
+  left: 4px;
+  background: #ffdd00;
+  box-shadow: 0 0 8px #ffdd00;
+}
+
+/* Add a subtle sun rays effect when ON */
+.toggle-switch input:checked + .slider {
+  background-color: #444;
+  box-shadow: 0 0 10px #ffdd00 inset;
+}
+
 </style>
 
 
 </head>
 <body>
 
-<nav style="text-align: center; margin-top: 1rem;">
+<!-- <nav style="text-align: center; margin-top: 1rem;">
   <a href="index.html" style="margin-right: 1rem; color: #20a7d8;">🏠 Dashboard</a>
   <a href="devices.html" style="color: #20a7d8;">📟 Devices</a>
   <a href="DieselSensor.html" style="color: #20a7d8;">⛽ Diesel Sensor</a>
-</nav>
+</nav> -->
 
 
 
 
 <!-- <a href="https://script.google.com/macros/s/AKfycby0pegI9k7YUtlJSGJNc-WJK1T17wfJ-Eb-tZC6G85N4qE3eRFfC0yNVAYBAohnlxfc/exec" target="_blank" rel="noopener noreferrer">Open Dashboard</a> -->
 
+<label class="toggle-switch">
+  <input type="checkbox" id="toggleDashboardCheckbox" checked>
+  <span class="slider"></span>
+</label>
 
   <iframe 
-    src="https://script.google.com/macros/s/AKfycbwEn6DzkijKRw_uP6RNzzMSlbjaBbrAdtFt4oHcdotL8XnpbDiArVoBW9hNBnsYC3LV/exec"
+    src="https://script.google.com/macros/s/AKfycbxwkHB0FG3s0iXhT1WiQPwyWq8pNKfD5Wqg839JWeHvwHailRX3kwVF1vrx38Ko1T6X/exec"
     id="dashboardIframe">
   </iframe>
 
@@ -260,43 +350,52 @@ header h1 {
   <div class="debug-log" id="debugLog"></div>
 
   <script>
-    const iframe = document.getElementById("dashboardIframe");
-    const fallback = document.getElementById("fallback");
-    const debugLog = document.getElementById("debugLog");
+const iframe = document.getElementById("dashboardIframe");
+const debugLog = document.getElementById("debugLog");
 
-    function logDebug(message) {
-      console.log(message);
-      debugLog.innerHTML += `<div>${message}</div>`;
-      debugLog.style.display = "block";
+// Your custom fallback div (add it in HTML below the iframe)
+const fallbackDiv = document.createElement("div");
+fallbackDiv.id = "fallbackMessage";
+fallbackDiv.innerHTML = "🚫 Dashboard could not load. Please check your connection or open in a new tab.";
+document.body.appendChild(fallbackDiv);
+
+// Check if iframe loads successfully
+iframe.addEventListener("load", () => {
+  console.log("✅ iframe loaded");
+  fallbackDiv.style.display = "none"; // hide fallback if loaded
+});
+
+// Check if iframe errors out
+iframe.addEventListener("error", () => {
+  console.log("❌ iframe failed to load");
+  fallbackDiv.style.display = "block";
+});
+
+// Extra timeout fallback in case of silent fail
+setTimeout(() => {
+  try {
+    const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
+    if (!iframeDocument || iframeDocument.body.innerHTML.trim() === "") {
+      console.log("⚠️ iframe empty after timeout");
+      fallbackDiv.style.display = "block";
     }
+  } catch (e) {
+    // Cross-origin error means iframe is inaccessible, treat as failure
+    console.log("⚠️ iframe cross-origin access blocked");
+    fallbackDiv.style.display = "block";
+  }
+}, 5000);
 
-    iframe.addEventListener("load", () => {
-    //   logDebug("✅ iframe loaded successfully.");
-    });
-
-    iframe.addEventListener("error", () => {
-      fallback.style.display = "block";
-      logDebug("❌ iframe failed to load.");
-    });
-
-    // Extra timeout check in case iframe silently fails
-    setTimeout(() => {
-      const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
-      if (!iframeDocument || iframeDocument.body.innerHTML.trim() === "") {
-        fallback.style.display = "block";
-        logDebug("⚠️ iframe is empty after timeout. Possibly blocked or content not loading.");
-      }
-    }, 5000);
   </script>
 
 
 
 
-<div class="dashboard-container">
+<div id="dashboard-container">
   <header>
       <div class="bg-left"></div>
   <div class="bg-right"></div>
-    <!-- <h7>Diesel Distributors</h7> -->
+    
   </header>
 
   <main class="info-box">
@@ -309,8 +408,6 @@ header h1 {
     </section>
 
 
-  <!-- <img src="images/Water Magic.gif" >
-   -->
   <div class="cropped-wrapper">
   <img 
     src="Water Magic.gif" 
@@ -327,8 +424,149 @@ header h1 {
         <div class="third">Great Things Are Coming</div>
       </div>
     </section>
+   
   </main>
-</div>
 
+
+</div>
+<script>
+const toggleCheckbox = document.getElementById("toggleDashboardCheckbox");
+const dashboard = document.getElementById("dashboard-container");
+
+toggleCheckbox.addEventListener("change", () => {
+  if (toggleCheckbox.checked) {
+    dashboard.style.display = "block";
+  } else {
+    dashboard.style.display = "none";
+  }
+});
+
+</script>
+
+
+
+<!-- 
+
+<script>
+  (function() {
+    const allowedHost = ['petrol.silverhome.uk', 'sayf.silverhome.uk', 'silverhome.uk'];
+
+    function isAllowedOrigin(origin) {
+      return allowedHost.some(host => origin && origin.includes(host));
+    }
+
+    try {
+      if (window.top === window.self) {
+        // Not embedded in iframe
+        document.body.innerHTML = `
+          <div style="padding:2rem; text-align:center;">
+            <h1>🚫 Access Denied</h1>
+            <p>Silver</p>
+          </div>`;
+        return;
+      }
+
+      // Check window.location.ancestorOrigins if available
+      const ancestorOrigins = window.location.ancestorOrigins;
+      let allowed = false;
+
+      if (ancestorOrigins && ancestorOrigins.length > 0) {
+        for (let i = 0; i < ancestorOrigins.length; i++) {
+          if (isAllowedOrigin(ancestorOrigins[i])) {
+            allowed = true;
+            break;
+          }
+        }
+      }
+
+      // Fallback to document.referrer if ancestorOrigins is unavailable or no match found
+      if (!allowed) {
+        const ref = document.referrer || '';
+        // If referrer is empty but embedded, allow it (some browsers block referrer)
+        allowed = ref === '' || isAllowedOrigin(ref);
+      }
+
+      if (!allowed) {
+        document.body.innerHTML = `
+          <div style="padding:2rem; text-align:center;">
+            <h1>🚫 Access Denied</h1>
+            <p>Don't try</p>
+            <p>Silver</p>
+          </div>`;
+      }
+    } catch (e) {
+      // In case of any error, block access as safe fallback
+      document.body.innerHTML = `
+        <div style="padding:2rem; text-align:center;">
+          <h1>🚫 Access Denied</h1>
+          <p>domain check failed.</p>
+        </div>`;
+    }
+  })();
+</script> -->
+
+<script>
+(function() {
+  const allowedHost = 'silverhome.uk';
+
+  function isAllowedOrigin(origin) {
+    return origin && origin.includes(allowedHost);
+  }
+
+  try {
+    // Allow if opened directly on silverhome.uk domain (not embedded in iframe)
+    if (window.top === window.self) {
+      if (isAllowedOrigin(window.location.hostname)) {
+        // Allowed direct access on silverhome.uk domain
+        return;
+      }
+      // If direct access on other domains, block
+      document.body.innerHTML = `
+        <div style="padding:2rem; text-align:center;">
+          <h1>🚫 Access Denied</h1>
+          <p>This app must be accessed directly on silverhome.uk domain or embedded in an iframe from silverhome.uk domains.</p>
+        </div>`;
+      return;
+    }
+
+    // If embedded in iframe, check ancestor origins
+    const ancestorOrigins = window.location.ancestorOrigins;
+    let allowed = false;
+
+    if (ancestorOrigins && ancestorOrigins.length > 0) {
+      for (let i = 0; i < ancestorOrigins.length; i++) {
+        if (isAllowedOrigin(ancestorOrigins[i])) {
+          allowed = true;
+          break;
+        }
+      }
+    }
+
+    // Fallback to document.referrer if no ancestorOrigins or no allowed found
+    if (!allowed) {
+      const ref = document.referrer || '';
+      allowed = isAllowedOrigin(ref);
+    }
+
+    if (!allowed) {
+      document.body.innerHTML = `
+        <div style="padding:2rem; text-align:center;">
+          <h1>🚫 Access Denied</h1>
+          <p>This app can only be embedded from silverhome.uk domains.</p>
+          <p>Embedding origin: ${document.referrer || '(unknown)'}</p>
+        </div>`;
+    }
+  } catch (e) {
+    document.body.innerHTML = `
+      <div style="padding:2rem; text-align:center;">
+        <h1>🚫 Access Denied</h1>
+        <p>Embedding domain check failed.</p>
+      </div>`;
+  }
+})();
+
+</script>
+
+  
 </body>
 </html>
