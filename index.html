@@ -368,7 +368,7 @@ iframe.addEventListener("load", () => {
 // Check if iframe errors out
 iframe.addEventListener("error", () => {
   console.log("❌ iframe failed to load");
-  fallbackDiv.style.display = "block";
+  fallbackDiv.style.display = "none";
 });
 
 // Extra timeout fallback in case of silent fail
@@ -377,12 +377,12 @@ setTimeout(() => {
     const iframeDocument = iframe.contentDocument || iframe.contentWindow.document;
     if (!iframeDocument || iframeDocument.body.innerHTML.trim() === "") {
       console.log("⚠️ iframe empty after timeout");
-      fallbackDiv.style.display = "block";
+      fallbackDiv.style.display = "none";
     }
   } catch (e) {
     // Cross-origin error means iframe is inaccessible, treat as failure
     console.log("⚠️ iframe cross-origin access blocked");
-    fallbackDiv.style.display = "block";
+    fallbackDiv.style.display = "none";
   }
 }, 5000);
 
