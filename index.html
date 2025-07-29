@@ -331,7 +331,8 @@ header h1 {
 <!-- <a href="https://script.google.com/macros/s/AKfycby0pegI9k7YUtlJSGJNc-WJK1T17wfJ-Eb-tZC6G85N4qE3eRFfC0yNVAYBAohnlxfc/exec" target="_blank" rel="noopener noreferrer">Open Dashboard</a> -->
 
 <label class="toggle-switch">
-  <input type="checkbox" id="toggleDashboardCheckbox" checked>
+  <!--   <input type="checkbox" id="toggleDashboardCheckbox" checked> -->
+  <input type="checkbox" id="toggleDashboardCheckbox">
   <span class="slider"></span>
 </label>
 
@@ -391,7 +392,10 @@ setTimeout(() => {
 
 
 
-<div id="dashboard-container">
+
+<!-- <div id="dashboard-container"> -->
+  <div id="dashboard-container" style="display: none;">
+
   <header>
       <div class="bg-left"></div>
   <div class="bg-right"></div>
@@ -432,7 +436,8 @@ setTimeout(() => {
 <script>
 const toggleCheckbox = document.getElementById("toggleDashboardCheckbox");
 const dashboard = document.getElementById("dashboard-container");
-
+// 🔧 Hide by default
+dashboard.style.display = "none";
 toggleCheckbox.addEventListener("change", () => {
   if (toggleCheckbox.checked) {
     dashboard.style.display = "block";
@@ -442,7 +447,6 @@ toggleCheckbox.addEventListener("change", () => {
 });
 
 </script>
-
 
 
 <!-- 
